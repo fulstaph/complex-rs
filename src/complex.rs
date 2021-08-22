@@ -1,69 +1,79 @@
 use num_traits::{One, Pow, Zero};
-use std::ops::{Add, Div, Mul, Sub};
+use std::{fmt, ops::{Add, Div, Mul, Sub}};
 
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Complex {
-    real: f64,
-    imag: f64,
+    re: f64,
+    im: f64,
 }
 
 impl Complex {
-    pub fn real(self: &Self) -> f64 {
-        self.real
+    pub fn re(self: &Self) -> f64 {
+        self.re
     }
 
-    pub fn imag(self: &Self) -> f64 {
-        self.imag
+    pub fn im(self: &Self) -> f64 {
+        self.im
     }
 
     pub fn arg(&self) -> f64 {
-        f64::atan2(self.imag, self.real)
+        f64::atan2(self.im, self.re)
     }
 
-    pub fn set_real(&mut self, real: f64) {
-        self.real = real;
+    pub fn set_re(&mut self, re: f64) {
+        self.re = re;
     }
 
-    pub fn set_imag(&mut self, imag: f64) {
-        self.imag = imag;
+    pub fn set_im(&mut self, im: f64) {
+        self.im = im;
     }
 
     pub fn abs(&self) -> f64 {
-        ((self.real.pow(2) + self.imag.pow(2)) as f64).sqrt()
+        ((self.re.pow(2) + self.im.pow(2)) as f64).sqrt()
     }
 
     pub fn abs_sq(&self) -> f64 {
-        (self.real.pow(2) + self.imag.pow(2)) as f64
+        (self.re.pow(2) + self.im.pow(2)) as f64
     }
 
     pub fn conjugate(&self) -> Complex {
-        Complex::new(self.real, -self.imag)
+        Complex::new(self.re, -self.im)
     }
 
-    pub fn new(real: f64, imag: f64) -> Complex {
-        Complex { real, imag }
+    pub fn new(re: f64, im: f64) -> Complex {
+        Complex { re, im }
     }
 
     pub fn i() -> Complex {
-        Complex {real: 0.0, imag: 1.0}
+        Complex {re: 0.0, im: 1.0}
     }
 
     pub fn i_ref() -> &'static Complex {
-        &Complex {real: 0.0, imag: 1.0}
+        &Complex {re: 0.0, im: 1.0}
+    }
+} 
+
+impl fmt::Display for Complex {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            (self.im == 0.0) => write!(f, "{}", re),
+            Complex { re: 0.0, im} => write!(f, "{}i", im),
+            Complex { re, im} => write!(f, "{} + {}i", re, im)
+        }
     }
 }
 
 impl Add for Complex {
     type Output = Complex;
     fn add(self, other: Self) -> Self {
-        Complex::new(self.real + other.real, self.imag + other.imag)
+        Complex::new(self.re + other.re, self.im + other.im)
     }
 }
 
 impl Sub for Complex {
     type Output = Complex;
     fn sub(self, other: Self) -> Self {
-        Complex::new(self.real - other.real, self.imag - other.imag)
+        Complex::new(self.re - other.re, self.im - other.im)
     }
 }
 
@@ -71,8 +81,8 @@ impl Mul for Complex {
     type Output = Complex;
     fn mul(self, rhs: Complex) -> Complex {
         Complex::new(
-            self.real * rhs.real - self.imag * rhs.imag,
-            self.real * rhs.imag + self.imag * rhs.real,
+            self.re * rhs.re - self.im * rhs.im,
+            self.re * rhs.im + self.im * rhs.re,
         )
     }
 }
@@ -82,8 +92,8 @@ impl Div for Complex {
     fn div(self, rhs: Complex) -> Complex {
         let denominator = rhs.abs_sq();
         Complex::new(
-            (self.real * rhs.real + self.imag * rhs.imag) / denominator,
-            (self.imag * rhs.real - self.real * rhs.imag) / denominator,
+            (self.re * rhs.re + self.im * rhs.im) / denominator,
+            (self.im * rhs.re - self.re * rhs.im) / denominator,
         )
     }
 }
@@ -94,12 +104,12 @@ impl Zero for Complex {
     }
 
     fn is_zero(&self) -> bool {
-        self.real == 0.0 && self.imag == 0.0
+        self.re == 0.0 && self.im == 0.0
     }
 
     fn set_zero(&mut self) {
-        self.real = 0.0;
-        self.imag = 0.0;
+        self.re = 0.0;
+        self.im = 0.0;
     }
 }
 
@@ -117,8 +127,8 @@ impl One for Complex {
     }
 
     fn set_one(&mut self) {
-        self.real = 1.0;
-        self.imag = 0.0;
+        self.re = 1.0;
+        self.im = 0.0;
     }
 }
 
@@ -130,15 +140,15 @@ mod tests {
     fn getters() {
         let c = Complex::new(1.0, 2.0);
 
-        assert_eq!(c.real(), 1.0);
+        assert_eq!(c.re(), 1.0);
 
-        assert_eq!(c.imag(), 2.0);
+        assert_eq!(c.im(), 2.0);
     }
 
     #[test]
     fn multiplication() {
         let i = Complex::new(0.0, 1.0);
-        assert_eq!((i * i).real(), -1.0);
+        assert_eq!((i * i).re(), -1.0);
     }
 
     #[test]
@@ -174,5 +184,12 @@ mod tests {
         c.set_one();
 
         assert_eq!(c.is_one(), true)
+    }
+
+    #[test]
+    fn check_string_respresentation() {
+        let c1 = Complex::new(1.03, 2.94);
+
+        assert_eq!(format!("{}", c1), "1.03 + 2.94i");
     }
 }
