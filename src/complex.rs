@@ -1,10 +1,10 @@
 use num_traits::{One, Pow, Zero};
-use std::ops::{Add, Sub, Mul, Div};
+use std::ops::{Add, Div, Mul, Sub};
 
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Complex {
     real: f64,
-    imag: f64
+    imag: f64,
 }
 
 impl Complex {
@@ -37,36 +37,42 @@ impl Complex {
     }
 
     pub fn new(real: f64, imag: f64) -> Complex {
-        Complex{real, imag}
+        Complex { real, imag }
     }
 }
 
 impl Add for Complex {
     type Output = Complex;
     fn add(self, other: Self) -> Self {
-        Complex::new(self.real + other.real,self.imag + other.imag)
+        Complex::new(self.real + other.real, self.imag + other.imag)
     }
 }
 
 impl Sub for Complex {
     type Output = Complex;
     fn sub(self, other: Self) -> Self {
-        Complex::new(self.real - other.real,self.imag - other.imag)
+        Complex::new(self.real - other.real, self.imag - other.imag)
     }
 }
 
 impl Mul for Complex {
     type Output = Complex;
     fn mul(self, rhs: Complex) -> Complex {
-        Complex::new(self.real * rhs.real - self.imag * rhs.imag, self.real * rhs.imag + self.imag * rhs.real)
+        Complex::new(
+            self.real * rhs.real - self.imag * rhs.imag,
+            self.real * rhs.imag + self.imag * rhs.real,
+        )
     }
 }
 
 impl Div for Complex {
     type Output = Complex;
     fn div(self, rhs: Complex) -> Complex {
-        let denominator = rhs.abs_sq(); 
-        Complex::new((self.real * rhs.real + self.imag * rhs.imag) / denominator, (self.imag * rhs.real - self.real * rhs.imag) / denominator)
+        let denominator = rhs.abs_sq();
+        Complex::new(
+            (self.real * rhs.real + self.imag * rhs.imag) / denominator,
+            (self.imag * rhs.real - self.real * rhs.imag) / denominator,
+        )
     }
 }
 
@@ -81,7 +87,7 @@ impl Zero for Complex {
 
     fn set_zero(&mut self) {
         self.real = 0.0;
-        self.imag = 0.0;   
+        self.imag = 0.0;
     }
 }
 
@@ -92,7 +98,8 @@ impl One for Complex {
 
     fn is_one(&self) -> bool
     where
-            Self: PartialEq, {
+        Self: PartialEq,
+    {
         // TODO: rhs allocates memory so use default comparison kekw
         self == &Self::one()
     }
@@ -104,13 +111,13 @@ impl One for Complex {
 }
 
 mod tests {
-    #[cfg(test)]    
+    #[cfg(test)]
     use super::*;
 
     #[test]
     fn getters() {
         let c = Complex::new(1.0, 2.0);
-        
+
         assert_eq!(c.real(), 1.0);
 
         assert_eq!(c.imag(), 2.0);
