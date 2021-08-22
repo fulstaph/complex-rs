@@ -16,6 +16,10 @@ impl Complex {
         self.imag
     }
 
+    pub fn arg(&self) -> f64 {
+        f64::atan2(self.imag, self.real)
+    }
+
     pub fn set_real(&mut self, real: f64) {
         self.real = real;
     }
@@ -38,6 +42,14 @@ impl Complex {
 
     pub fn new(real: f64, imag: f64) -> Complex {
         Complex { real, imag }
+    }
+
+    pub fn i() -> Complex {
+        Complex {real: 0.0, imag: 1.0}
+    }
+
+    pub fn i_ref() -> &'static Complex {
+        &Complex {real: 0.0, imag: 1.0}
     }
 }
 
