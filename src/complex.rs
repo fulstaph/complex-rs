@@ -55,8 +55,8 @@ impl Complex {
 
 impl fmt::Display for Complex {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            (self.im == 0.0) => write!(f, "{}", re),
+        match *self {
+            Complex { re, im: 0.0 } => write!(f, "{}", re),
             Complex { re: 0.0, im} => write!(f, "{}i", im),
             Complex { re, im} => write!(f, "{} + {}i", re, im)
         }
