@@ -1,5 +1,5 @@
 use num_traits::{One, Pow, Zero};
-use std::{fmt, ops::{Add, Div, Mul, Sub}};
+use std::{fmt, ops::{Add, Div, Mul, Sub, Neg}};
 
 #[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Complex {
@@ -60,6 +60,13 @@ impl fmt::Display for Complex {
             Complex { re , im} if re == 0.0 => write!(f, "{}i", im),
             Complex { re, im} => write!(f, "{} + {}i", re, im)
         }
+    }
+}
+
+impl Neg for Complex {
+    type Output = Complex;
+    fn neg(self) -> Complex {
+        Complex {re: -self.re, im: -self.im }
     }
 }
 
