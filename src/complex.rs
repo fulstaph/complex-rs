@@ -191,5 +191,12 @@ mod tests {
         let c1 = Complex::new(1.03, 2.94);
 
         assert_eq!(format!("{}", c1), "1.03 + 2.94i");
+
+        let c2 = Complex::new(0.0, 2.94);
+
+        assert_eq!(format!("{}", c2), "2.94i");
+
+        let c3 = Complex::new(1.03, 0.0);
+        assert_eq!(format!("{}", c3), "1.03");
     }
 }
